@@ -237,8 +237,9 @@ io.on("connection", (socket) => {
       nome: dados.nome && dados.nome.trim() !== "" ? dados.nome : "Anônimo",
       texto: dados.texto,
       horario: new Date().toLocaleTimeString("pt-BR", {
+        timeZone: "America/Sao_Paulo",
         hour: "2-digit",
-        minute: "2-digit",
+        minute: "2-digit"
       }),
     };
 
