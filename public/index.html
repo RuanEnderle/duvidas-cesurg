@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Dúvidas CESURG</title>
+
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0b6b3a" />
+
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Dúvidas CESURG" />
+  <link rel="apple-touch-icon" href="/logo-cesurg.png" />
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0b6b3a, #f2c94c, #b71c1c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .caixa {
+      background: white;
+      width: 100%;
+      max-width: 430px;
+      border-radius: 24px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+    }
+
+    .logo {
+      max-width: 180px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #0b6b3a;
+      font-size: 30px;
+    }
+
+    p {
+      color: #333;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    .botao {
+      display: block;
+      text-decoration: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-weight: bold;
+      margin-top: 14px;
+      color: white;
+      font-size: 17px;
+    }
+
+    .professor {
+      background: #0b6b3a;
+    }
+
+    .aluno {
+      background: #b71c1c;
+    }
+
+    .rodape {
+      margin-top: 22px;
+      font-size: 13px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="caixa">
+    <img src="/logo-cesurg.png" class="logo" alt="Logo CESURG" />
+
+    <h1>Dúvidas CESURG</h1>
+
+    <p>
+      Sistema digital para envio de dúvidas em sala de aula,
+      com acesso para professores e alunos.
+    </p>
+
+    <a class="botao professor" href="/professor.html">Sou professor</a>
+    <a class="botao aluno" href="/aluno.html">Sou aluno</a>
+
+    <div class="rodape">
+      Aplicativo web para participação e inclusão em sala de aula.
+    </div>
+  </div>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/service-worker.js");
+      });
+    }
+  </script>
+</body>
+</html>
