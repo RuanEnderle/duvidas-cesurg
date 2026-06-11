@@ -1,0 +1,25 @@
+{
+  "name": "Dúvidas CESURG",
+  "short_name": "Dúvidas",
+  "description": "Sistema digital para envio de dúvidas em sala de aula.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0b6b3a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo-cesurg.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-cesurg.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
