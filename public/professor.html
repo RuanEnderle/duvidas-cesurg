@@ -1,213 +1,160 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CESURG - Painel do Professor</title>
+  <link rel="stylesheet" href="style.css">
 
-  <title>Professor - Dúvidas CESURG</title>
-
-  <link rel="stylesheet" href="/style.css" />
-
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#0b6b3a" />
-
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Dúvidas CESURG" />
-  <link rel="apple-touch-icon" href="/logo-cesurg.png" />
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0b6b3a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Dúvidas CESURG">
+  <link rel="apple-touch-icon" href="/logo-cesurg.png">
 </head>
-<body>
-  <div class="fundo"></div>
+<body class="pagina-professor">
 
-  <main class="container professor-container">
-    <section id="areaEntrada" class="card">
-      <div class="topo-logo">
-        <img src="/logo-cesurg.png" alt="Logo CESURG" class="logo" />
+  <div class="fundo-decorativo">
+    <div class="faixa faixa-verde"></div>
+    <div class="faixa faixa-amarela"></div>
+    <div class="faixa faixa-vermelha"></div>
+  </div>
+
+  <div class="card-principal card-professor">
+    <div class="topo-app">
+      <div class="logo-box">
+        <img src="logo-cesurg.png" alt="Logo CESURG" class="logo-cesurg-img">
       </div>
+      <div class="subtitulo-topo">Painel do Professor</div>
+    </div>
 
-      <h1>Painel do professor</h1>
+    <div class="icone-topo">👨‍🏫</div>
+
+    <div id="areaInicio">
+      <h1>Criar aula</h1>
 
       <p class="descricao">
-        Crie uma aula para receber dúvidas em tempo real ou entre em uma aula já criada.
+        Crie uma aula, defina uma senha e compartilhe o código com os alunos.
       </p>
 
-      <div class="divisor">
-        <span>Criar nova aula</span>
-      </div>
+      <label for="professor">Nome do professor:</label>
+      <input type="text" id="professor" placeholder="Digite o nome do professor">
 
-      <label for="professor">Nome do professor</label>
-      <input
-        type="text"
-        id="professor"
-        placeholder="Digite o nome do professor"
-        autocomplete="off"
-      />
+      <label for="materia">Nome da matéria ou aula:</label>
+      <input type="text" id="materia" placeholder="Digite o nome da matéria ou aula">
 
-      <label for="materia">Matéria ou aula</label>
-      <input
-        type="text"
-        id="materia"
-        placeholder="Digite a matéria ou aula"
-        autocomplete="off"
-      />
+      <label for="turma">Turma ou curso:</label>
+      <input type="text" id="turma" placeholder="Digite a turma ou curso">
 
-      <label for="turma">Turma ou curso</label>
-      <input
-        type="text"
-        id="turma"
-        placeholder="Digite a turma ou curso"
-        autocomplete="off"
-      />
+      <label for="senhaCriar">Senha do professor:</label>
+      <input type="password" id="senhaCriar" placeholder="Crie uma senha para acessar o painel">
 
-      <label for="senhaCriar">Senha do professor</label>
-      <input
-        type="password"
-        id="senhaCriar"
-        placeholder="Digite uma senha para esta aula"
-        autocomplete="off"
-      />
+      <button onclick="criarAula()">Gerar código da aula</button>
 
-      <button id="botaoCriar" class="botao-principal">
-        Criar aula
-      </button>
+      <p class="descricao bloco-divisao">
+        Ou entre em uma aula já criada:
+      </p>
 
-      <div class="divisor">
-        <span>Entrar em aula criada</span>
-      </div>
+      <label for="codigoExistente">Código da aula:</label>
+      <input type="text" id="codigoExistente" placeholder="Digite o código da aula">
 
-      <label for="codigoEntrar">Código da aula</label>
-      <input
-        type="text"
-        id="codigoEntrar"
-        placeholder="Digite o código da aula"
-        autocomplete="off"
-      />
+      <label for="senhaEntrar">Senha do professor:</label>
+      <input type="password" id="senhaEntrar" placeholder="Digite a senha do painel">
 
-      <label for="senhaEntrar">Senha do professor</label>
-      <input
-        type="password"
-        id="senhaEntrar"
-        placeholder="Digite a senha da aula"
-        autocomplete="off"
-      />
-
-      <button id="botaoEntrar" class="botao-secundario">
-        Entrar no painel
-      </button>
+      <button onclick="entrarPainel()">Entrar no painel</button>
 
       <p id="mensagemProfessor" class="mensagem"></p>
-    </section>
+    </div>
 
-    <section id="areaPainel" class="card painel oculto">
-      <div class="topo-logo">
-        <img src="/logo-cesurg.png" alt="Logo CESURG" class="logo" />
-      </div>
-
+    <div id="areaPainel" style="display: none;">
       <h1>Dúvidas recebidas</h1>
 
-      <div class="info-aula">
-        <p><strong>Código da aula:</strong></p>
-        <div class="codigo-box" id="codigoAula">---</div>
+      <p class="descricao">
+        Código para os alunos acessarem:
+      </p>
 
-        <p id="infoProfessor"></p>
-        <p id="infoMateria"></p>
-        <p id="infoTurma"></p>
+      <div id="codigoAula" class="contador-box destaque-codigo" style="font-size: 30px;"></div>
+
+      <div id="infoAula" class="contador-box"></div>
+
+      <label>Link dos alunos:</label>
+      <input type="text" id="linkAluno" readonly>
+
+      <button onclick="copiarCodigo()">Copiar código</button>
+
+      <button onclick="copiarLinkAluno()">Copiar link dos alunos</button>
+
+      <div class="area-qrcode">
+        <p class="descricao">QR Code para os alunos:</p>
+        <img id="qrCodeAluno" alt="QR Code da aula">
       </div>
 
-      <div class="area-link">
-        <label>Link para os alunos</label>
+      <button onclick="ativarSom()" id="botaoSom">
+        🔊 Ativar som
+      </button>
 
-        <input id="linkAluno" type="text" readonly />
+      <button onclick="encerrarAula()" class="botao-encerrar">
+        🛑 Encerrar aula
+      </button>
 
-        <button id="botaoCopiar" class="botao-secundario">
-          Copiar link
-        </button>
+      <div id="contador" class="contador-box">
+        Nenhuma dúvida pendente.
       </div>
 
-      <div class="area-qr">
-        <p>QR Code para os alunos acessarem:</p>
-        <img id="qrCode" alt="QR Code da aula" />
-      </div>
-
-      <div class="botoes-painel">
-        <button id="botaoSom" class="botao-secundario">
-          Ativar som
-        </button>
-
-        <button id="botaoEncerrar" class="botao-perigo">
-          Encerrar aula
-        </button>
-      </div>
-
-      <p id="statusSom" class="mensagem"></p>
-
-      <div class="lista-topo">
-        <h2>Perguntas pendentes</h2>
-        <span id="contadorPerguntas">0</span>
-      </div>
-
-      <div id="listaPerguntas" class="lista-perguntas">
-        <p class="sem-perguntas">Nenhuma dúvida enviada ainda.</p>
-      </div>
-    </section>
-  </main>
+      <div id="listaPerguntas"></div>
+    </div>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
 
   <script>
     const socket = io();
 
-    const areaEntrada = document.getElementById("areaEntrada");
+    const areaInicio = document.getElementById("areaInicio");
     const areaPainel = document.getElementById("areaPainel");
-
-    const campoProfessor = document.getElementById("professor");
-    const campoMateria = document.getElementById("materia");
-    const campoTurma = document.getElementById("turma");
-    const campoSenhaCriar = document.getElementById("senhaCriar");
-
-    const campoCodigoEntrar = document.getElementById("codigoEntrar");
-    const campoSenhaEntrar = document.getElementById("senhaEntrar");
-
-    const botaoCriar = document.getElementById("botaoCriar");
-    const botaoEntrar = document.getElementById("botaoEntrar");
-
     const mensagemProfessor = document.getElementById("mensagemProfessor");
-
     const codigoAula = document.getElementById("codigoAula");
-    const infoProfessor = document.getElementById("infoProfessor");
-    const infoMateria = document.getElementById("infoMateria");
-    const infoTurma = document.getElementById("infoTurma");
-
+    const infoAula = document.getElementById("infoAula");
     const linkAluno = document.getElementById("linkAluno");
-    const botaoCopiar = document.getElementById("botaoCopiar");
-    const qrCode = document.getElementById("qrCode");
-
+    const qrCodeAluno = document.getElementById("qrCodeAluno");
+    const lista = document.getElementById("listaPerguntas");
+    const contador = document.getElementById("contador");
     const botaoSom = document.getElementById("botaoSom");
-    const botaoEncerrar = document.getElementById("botaoEncerrar");
-    const statusSom = document.getElementById("statusSom");
-
-    const listaPerguntas = document.getElementById("listaPerguntas");
-    const contadorPerguntas = document.getElementById("contadorPerguntas");
 
     let codigoAtual = "";
-    let audioContexto = null;
+    let audioContext;
     let somAtivado = false;
 
-    function mostrarMensagem(texto, tipo) {
-      mensagemProfessor.textContent = texto;
-      mensagemProfessor.className = "mensagem " + tipo;
-    }
-
-    function mostrarStatusSom(texto, tipo) {
-      statusSom.textContent = texto;
-      statusSom.className = "mensagem " + tipo;
-    }
-
     function criarAula() {
-      const professor = campoProfessor.value.trim();
-      const materia = campoMateria.value.trim();
-      const turma = campoTurma.value.trim();
-      const senha = campoSenhaCriar.value.trim();
+      const professor = document.getElementById("professor").value.trim();
+      const materia = document.getElementById("materia").value.trim();
+      const turma = document.getElementById("turma").value.trim();
+      const senha = document.getElementById("senhaCriar").value.trim();
+
+      if (professor === "") {
+        mensagemProfessor.innerText = "Digite o nome do professor.";
+        mensagemProfessor.style.color = "#b91c1c";
+        return;
+      }
+
+      if (materia === "") {
+        mensagemProfessor.innerText = "Digite o nome da matéria ou aula.";
+        mensagemProfessor.style.color = "#b91c1c";
+        return;
+      }
+
+      if (turma === "") {
+        mensagemProfessor.innerText = "Digite a turma ou curso.";
+        mensagemProfessor.style.color = "#b91c1c";
+        return;
+      }
+
+      if (senha === "") {
+        mensagemProfessor.innerText = "Digite uma senha para o professor.";
+        mensagemProfessor.style.color = "#b91c1c";
+        return;
+      }
 
       socket.emit("criarAula", {
         professor: professor,
@@ -217,9 +164,21 @@
       });
     }
 
-    function entrarPainelProfessor() {
-      const codigo = campoCodigoEntrar.value.trim().toUpperCase();
-      const senha = campoSenhaEntrar.value.trim();
+    function entrarPainel() {
+      const codigo = document.getElementById("codigoExistente").value.trim().toUpperCase();
+      const senha = document.getElementById("senhaEntrar").value.trim();
+
+      if (codigo === "") {
+        mensagemProfessor.innerText = "Digite o código da aula.";
+        mensagemProfessor.style.color = "#b91c1c";
+        return;
+      }
+
+      if (senha === "") {
+        mensagemProfessor.innerText = "Digite a senha do professor.";
+        mensagemProfessor.style.color = "#b91c1c";
+        return;
+      }
 
       socket.emit("entrarPainelProfessor", {
         codigo: codigo,
@@ -227,148 +186,148 @@
       });
     }
 
-    botaoCriar.addEventListener("click", criarAula);
-    botaoEntrar.addEventListener("click", entrarPainelProfessor);
+    socket.on("aulaCriada", (dados) => {
+      codigoAtual = dados.codigo || "";
 
-    campoSenhaCriar.addEventListener("keydown", function (evento) {
-      if (evento.key === "Enter") {
-        criarAula();
-      }
+      const professorRecebido = dados.professor || "Não informado";
+      const materiaRecebida = dados.materia || "Não informada";
+      const turmaRecebida = dados.turma || "Não informada";
+
+      codigoAula.innerText = codigoAtual;
+
+      infoAula.innerHTML = `
+        <strong>Professor:</strong> ${protegerTexto(professorRecebido)}<br>
+        <strong>Matéria:</strong> ${protegerTexto(materiaRecebida)}<br>
+        <strong>Turma:</strong> ${protegerTexto(turmaRecebida)}
+      `;
+
+      const linkGerado = window.location.origin + "/aluno.html?codigo=" + encodeURIComponent(codigoAtual);
+      linkAluno.value = linkGerado;
+
+      qrCodeAluno.src = "/qrcode?texto=" + encodeURIComponent(linkGerado);
+
+      areaInicio.style.display = "none";
+      areaPainel.style.display = "block";
     });
 
-    campoSenhaEntrar.addEventListener("keydown", function (evento) {
-      if (evento.key === "Enter") {
-        entrarPainelProfessor();
-      }
+    socket.on("erroProfessor", (dados) => {
+      mensagemProfessor.innerText = dados.mensagem;
+      mensagemProfessor.style.color = "#b91c1c";
     });
 
-    socket.on("erroProfessor", function (dados) {
-      mostrarMensagem(dados.mensagem, "erro");
-    });
+    function copiarCodigo() {
+      navigator.clipboard.writeText(codigoAtual);
 
-    socket.on("aulaCriada", function (dados) {
-      codigoAtual = dados.codigo;
+      codigoAula.innerText = codigoAtual + "  ✅ copiado";
 
-      areaEntrada.classList.add("oculto");
-      areaPainel.classList.remove("oculto");
-
-      codigoAula.textContent = dados.codigo;
-      infoProfessor.innerHTML = "<strong>Professor:</strong> " + dados.professor;
-      infoMateria.innerHTML = "<strong>Matéria:</strong> " + dados.materia;
-      infoTurma.innerHTML = "<strong>Turma:</strong> " + dados.turma;
-
-      const link = window.location.origin + "/aluno.html?codigo=" + encodeURIComponent(dados.codigo);
-
-      linkAluno.value = link;
-      qrCode.src = "/qrcode?texto=" + encodeURIComponent(link);
-    });
-
-    socket.on("listaPerguntas", function (perguntas) {
-      renderizarPerguntas(perguntas);
-    });
-
-    function renderizarPerguntas(perguntas) {
-      contadorPerguntas.textContent = perguntas.length;
-
-      if (perguntas.length === 0) {
-        listaPerguntas.innerHTML = '<p class="sem-perguntas">Nenhuma dúvida enviada ainda.</p>';
-        return;
-      }
-
-      listaPerguntas.innerHTML = "";
-
-      perguntas.forEach(function (pergunta) {
-        const item = document.createElement("div");
-        item.className = "pergunta-card";
-
-        const topo = document.createElement("div");
-        topo.className = "pergunta-topo";
-
-        const nome = document.createElement("strong");
-        nome.textContent = pergunta.nome || "Anônimo";
-
-        const horario = document.createElement("span");
-        horario.textContent = pergunta.horario || "";
-
-        topo.appendChild(nome);
-        topo.appendChild(horario);
-
-        const texto = document.createElement("p");
-        texto.textContent = pergunta.texto;
-
-        const botao = document.createElement("button");
-        botao.className = "botao-responder";
-        botao.textContent = "Marcar como respondida";
-
-        botao.addEventListener("click", function () {
-          socket.emit("marcarRespondida", {
-            codigo: codigoAtual,
-            id: pergunta.id
-          });
-        });
-
-        item.appendChild(topo);
-        item.appendChild(texto);
-        item.appendChild(botao);
-
-        listaPerguntas.appendChild(item);
-      });
+      setTimeout(() => {
+        codigoAula.innerText = codigoAtual;
+      }, 1500);
     }
 
-    botaoCopiar.addEventListener("click", async function () {
-      try {
-        await navigator.clipboard.writeText(linkAluno.value);
-        botaoCopiar.textContent = "Link copiado!";
+    function copiarLinkAluno() {
+      navigator.clipboard.writeText(linkAluno.value);
 
-        setTimeout(function () {
-          botaoCopiar.textContent = "Copiar link";
-        }, 2000);
-      } catch (erro) {
-        linkAluno.select();
-        document.execCommand("copy");
-      }
-    });
+      const textoOriginal = linkAluno.value;
+      linkAluno.value = "Link copiado com sucesso!";
 
-    botaoSom.addEventListener("click", function () {
-      if (!audioContexto) {
-        audioContexto = new (window.AudioContext || window.webkitAudioContext)();
-      }
+      setTimeout(() => {
+        linkAluno.value = textoOriginal;
+      }, 1500);
+    }
 
+    function ativarSom() {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
       somAtivado = true;
-      tocarSom();
 
-      botaoSom.textContent = "Som ativado";
-      mostrarStatusSom("Som ativado. O professor será avisado quando chegar uma nova dúvida.", "sucesso");
-    });
+      botaoSom.innerText = "✅ Som ativado";
+      botaoSom.style.background = "linear-gradient(90deg, #15803d, #22c55e)";
 
-    function tocarSom() {
-      if (!somAtivado || !audioContexto) {
+      tocarNotificacao();
+    }
+
+    function tocarBeep(frequencia, inicio, duracao) {
+      if (!audioContext) {
         return;
       }
 
-      const oscilador = audioContexto.createOscillator();
-      const ganho = audioContexto.createGain();
+      const oscilador = audioContext.createOscillator();
+      const ganho = audioContext.createGain();
 
-      oscilador.type = "sine";
-      oscilador.frequency.setValueAtTime(880, audioContexto.currentTime);
+      oscilador.type = "square";
+      oscilador.frequency.setValueAtTime(frequencia, audioContext.currentTime + inicio);
 
-      ganho.gain.setValueAtTime(0.001, audioContexto.currentTime);
-      ganho.gain.exponentialRampToValueAtTime(0.7, audioContexto.currentTime + 0.02);
-      ganho.gain.exponentialRampToValueAtTime(0.001, audioContexto.currentTime + 0.35);
+      ganho.gain.setValueAtTime(0.95, audioContext.currentTime + inicio);
+      ganho.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + inicio + duracao);
 
       oscilador.connect(ganho);
-      ganho.connect(audioContexto.destination);
+      ganho.connect(audioContext.destination);
 
-      oscilador.start();
-      oscilador.stop(audioContexto.currentTime + 0.35);
+      oscilador.start(audioContext.currentTime + inicio);
+      oscilador.stop(audioContext.currentTime + inicio + duracao);
     }
 
-    socket.on("notificacaoProfessor", function () {
-      tocarSom();
+    function tocarNotificacao() {
+      if (!somAtivado || !audioContext) {
+        return;
+      }
+
+      tocarBeep(1200, 0.00, 0.18);
+      tocarBeep(1500, 0.25, 0.18);
+      tocarBeep(1200, 0.50, 0.25);
+    }
+
+    function protegerTexto(texto) {
+      const div = document.createElement("div");
+      div.innerText = texto;
+      return div.innerHTML;
+    }
+
+    socket.on("listaPerguntas", (perguntas) => {
+      lista.innerHTML = "";
+
+      if (perguntas.length === 0) {
+        contador.innerText = "Nenhuma dúvida pendente.";
+        return;
+      }
+
+      contador.innerText = perguntas.length + " dúvida(s) pendente(s).";
+
+      perguntas.forEach((pergunta) => {
+        const div = document.createElement("div");
+        div.className = "card-pergunta";
+
+        div.innerHTML = `
+          <div class="topo-pergunta">
+            <div class="aluno-info">👤 ${protegerTexto(pergunta.nome)}</div>
+            <div class="horario-info">🕒 ${protegerTexto(pergunta.horario)}</div>
+          </div>
+
+          <div class="texto-pergunta">
+            ${protegerTexto(pergunta.texto)}
+          </div>
+
+          <button class="botao-respondida" onclick="marcarRespondida(${pergunta.id})">
+            Marcar como respondida
+          </button>
+        `;
+
+        lista.appendChild(div);
+      });
     });
 
-    botaoEncerrar.addEventListener("click", function () {
-      const confirmar = confirm("Tem certeza que deseja encerrar esta aula? O código não poderá mais ser usado.");
+    socket.on("notificacaoProfessor", () => {
+      tocarNotificacao();
+    });
+
+    function encerrarAula() {
+      if (codigoAtual === "") {
+        return;
+      }
+
+      const confirmar = confirm(
+        "Tem certeza que deseja encerrar esta aula? O código será apagado e os alunos não conseguirão mais enviar dúvidas."
+      );
 
       if (!confirmar) {
         return;
@@ -377,22 +336,19 @@
       socket.emit("encerrarAula", {
         codigo: codigoAtual
       });
-    });
+    }
 
-    socket.on("aulaEncerrada", function (dados) {
+    socket.on("aulaEncerrada", (dados) => {
       alert(dados.mensagem);
-
-      codigoAtual = "";
-
-      areaPainel.classList.add("oculto");
-      areaEntrada.classList.remove("oculto");
-
-      campoCodigoEntrar.value = "";
-      campoSenhaEntrar.value = "";
-
-      listaPerguntas.innerHTML = '<p class="sem-perguntas">Nenhuma dúvida enviada ainda.</p>';
-      contadorPerguntas.textContent = "0";
+      location.reload();
     });
+
+    function marcarRespondida(id) {
+      socket.emit("marcarRespondida", {
+        codigo: codigoAtual,
+        id: id
+      });
+    }
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
