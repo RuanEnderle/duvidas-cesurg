@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>CESURG - Enviar Dúvida</title>
+
   <link rel="stylesheet" href="style.css">
 
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0b6b3a">
+
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Dúvidas CESURG">
   <link rel="apple-touch-icon" href="/logo-cesurg.png">
 </head>
+
 <body class="pagina-aluno">
 
   <div class="fundo-decorativo">
@@ -26,26 +30,47 @@
       <div class="logo-box">
         <img src="logo-cesurg.png" alt="Logo CESURG" class="logo-cesurg-img">
       </div>
-      <div class="subtitulo-topo">Canal Privado de Dúvidas</div>
+
+      <div class="subtitulo-topo">
+        Canal Privado de Dúvidas
+      </div>
     </div>
 
     <div class="icone-topo">🎓</div>
 
     <h1>Enviar dúvida</h1>
+
     <p class="descricao">
       Digite o código informado pelo professor e envie sua dúvida de forma privada.
     </p>
 
     <label for="codigo">Código da aula:</label>
-    <input type="text" id="codigo" placeholder="Digite o código informado pelo professor">
+    <input
+      type="text"
+      id="codigo"
+      placeholder="Digite o código informado pelo professor"
+      autocomplete="off"
+    >
 
-    <label for="nome">Seu nome <span class="texto-opcional">(opcional)</span>:</label>
-    <input type="text" id="nome" placeholder="Digite seu nome ou deixe em branco">
+    <label for="nome">
+      Seu nome <span class="texto-opcional">(opcional)</span>:
+    </label>
+    <input
+      type="text"
+      id="nome"
+      placeholder="Digite seu nome ou deixe em branco"
+      autocomplete="off"
+    >
 
     <label for="pergunta">Sua dúvida:</label>
-    <textarea id="pergunta" placeholder="Digite sua dúvida aqui..."></textarea>
+    <textarea
+      id="pergunta"
+      placeholder="Digite sua dúvida aqui..."
+    ></textarea>
 
-    <button onclick="enviarPergunta()" id="botaoEnviar">Enviar dúvida</button>
+    <button onclick="enviarPergunta()" id="botaoEnviar">
+      Enviar dúvida
+    </button>
 
     <p id="mensagem" class="mensagem"></p>
 
@@ -61,11 +86,11 @@
   <script>
     const socket = io();
 
-    let alunoId = localStorage.getItem("alunoId");
+    let alunoId = localStorage.getItem("alunoIdDuvidasCesurg");
 
     if (!alunoId) {
       alunoId = "aluno-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
-      localStorage.setItem("alunoId", alunoId);
+      localStorage.setItem("alunoIdDuvidasCesurg", alunoId);
     }
 
     const parametros = new URLSearchParams(window.location.search);
@@ -100,6 +125,12 @@
         texto: pergunta
       });
     }
+
+    document.getElementById("pergunta").addEventListener("keydown", function (evento) {
+      if (evento.key === "Enter" && evento.ctrlKey) {
+        enviarPergunta();
+      }
+    });
 
     socket.on("perguntaEnviada", (dados) => {
       const pergunta = document.getElementById("pergunta");
