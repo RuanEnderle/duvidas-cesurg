@@ -1,144 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CESURG - Enviar Dúvida</title>
+  <link rel="stylesheet" href="style.css">
 
-  <title>Aluno - Dúvidas CESURG</title>
-
-  <link rel="stylesheet" href="/style.css" />
-
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#0b6b3a" />
-
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Dúvidas CESURG" />
-  <link rel="apple-touch-icon" href="/logo-cesurg.png" />
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0b6b3a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Dúvidas CESURG">
+  <link rel="apple-touch-icon" href="/logo-cesurg.png">
 </head>
-<body>
-  <div class="fundo"></div>
+<body class="pagina-aluno">
 
-  <main class="container">
-    <section class="card">
-      <div class="topo-logo">
-        <img src="/logo-cesurg.png" alt="Logo CESURG" class="logo" />
+  <div class="fundo-decorativo">
+    <div class="faixa faixa-verde"></div>
+    <div class="faixa faixa-amarela"></div>
+    <div class="faixa faixa-vermelha"></div>
+  </div>
+
+  <div class="card-principal">
+    <div class="topo-app">
+      <div class="logo-box">
+        <img src="logo-cesurg.png" alt="Logo CESURG" class="logo-cesurg-img">
       </div>
+      <div class="subtitulo-topo">Canal Privado de Dúvidas</div>
+    </div>
 
-      <h1>Enviar dúvida</h1>
+    <div class="icone-topo">🎓</div>
 
-      <p class="descricao">
-        Digite o código da aula e envie sua dúvida para o professor.
-        Você pode colocar seu nome ou enviar como anônimo.
-      </p>
+    <h1>Enviar dúvida</h1>
+    <p class="descricao">
+      Digite o código informado pelo professor e envie sua dúvida de forma privada.
+    </p>
 
-      <label for="codigo">Código da aula</label>
-      <input
-        type="text"
-        id="codigo"
-        placeholder="Digite o código da aula"
-        autocomplete="off"
-      />
+    <label for="codigo">Código da aula:</label>
+    <input type="text" id="codigo" placeholder="Digite o código informado pelo professor">
 
-      <label for="nome">Nome do aluno</label>
-      <input
-        type="text"
-        id="nome"
-        placeholder="Opcional"
-        autocomplete="off"
-      />
+    <label for="nome">Seu nome <span class="texto-opcional">(opcional)</span>:</label>
+    <input type="text" id="nome" placeholder="Digite seu nome ou deixe em branco">
 
-      <label for="pergunta">Sua dúvida</label>
-      <textarea
-        id="pergunta"
-        rows="5"
-        placeholder="Digite sua dúvida aqui"
-      ></textarea>
+    <label for="pergunta">Sua dúvida:</label>
+    <textarea id="pergunta" placeholder="Digite sua dúvida aqui..."></textarea>
 
-      <button id="botaoEnviar" class="botao-principal">
-        Enviar dúvida
-      </button>
+    <button onclick="enviarPergunta()" id="botaoEnviar">Enviar dúvida</button>
 
-      <p id="mensagem" class="mensagem"></p>
-    </section>
-  </main>
+    <p id="mensagem" class="mensagem"></p>
+
+    <div class="rodape-ilustrativo">
+      <span>📘 Aluno</span>
+      <span>🔐 Código da aula</span>
+      <span>💬 Dúvida privada</span>
+    </div>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
 
   <script>
     const socket = io();
 
-    const campoCodigo = document.getElementById("codigo");
-    const campoNome = document.getElementById("nome");
-    const campoPergunta = document.getElementById("pergunta");
-    const botaoEnviar = document.getElementById("botaoEnviar");
-    const mensagem = document.getElementById("mensagem");
-
-    let alunoId = localStorage.getItem("alunoIdDuvidasCesurg");
+    let alunoId = localStorage.getItem("alunoId");
 
     if (!alunoId) {
       alunoId = "aluno-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
-      localStorage.setItem("alunoIdDuvidasCesurg", alunoId);
+      localStorage.setItem("alunoId", alunoId);
     }
 
     const parametros = new URLSearchParams(window.location.search);
-    const codigoUrl = parametros.get("codigo");
+    const codigoDoLink = parametros.get("codigo");
 
-    if (codigoUrl) {
-      campoCodigo.value = codigoUrl.toUpperCase();
-    }
-
-    function mostrarMensagem(texto, tipo) {
-      mensagem.textContent = texto;
-      mensagem.className = "mensagem " + tipo;
+    if (codigoDoLink) {
+      document.getElementById("codigo").value = codigoDoLink.toUpperCase();
     }
 
     function enviarPergunta() {
-      const codigo = campoCodigo.value.trim().toUpperCase();
-      const nome = campoNome.value.trim();
-      const texto = campoPergunta.value.trim();
+      const codigo = document.getElementById("codigo").value.trim().toUpperCase();
+      const nome = document.getElementById("nome").value.trim();
+      const pergunta = document.getElementById("pergunta").value.trim();
+      const mensagem = document.getElementById("mensagem");
 
       if (codigo === "") {
-        mostrarMensagem("Digite o código da aula.", "erro");
+        mensagem.innerText = "Digite o código da aula antes de enviar.";
+        mensagem.style.color = "#b91c1c";
         return;
       }
 
-      if (texto === "") {
-        mostrarMensagem("Digite sua dúvida antes de enviar.", "erro");
+      if (pergunta === "") {
+        mensagem.innerText = "Digite uma dúvida antes de enviar.";
+        mensagem.style.color = "#b91c1c";
         return;
       }
 
       socket.emit("novaPergunta", {
+        alunoId: alunoId,
         codigo: codigo,
-        nome: nome,
-        texto: texto,
-        alunoId: alunoId
+        nome: nome === "" ? "Anônimo" : nome,
+        texto: pergunta
       });
     }
 
-    botaoEnviar.addEventListener("click", enviarPergunta);
+    socket.on("perguntaEnviada", (dados) => {
+      const pergunta = document.getElementById("pergunta");
+      const mensagem = document.getElementById("mensagem");
 
-    campoPergunta.addEventListener("keydown", function (evento) {
-      if (evento.key === "Enter" && evento.ctrlKey) {
-        enviarPergunta();
-      }
+      pergunta.value = "";
+      mensagem.innerText = dados.mensagem;
+      mensagem.style.color = "#15803d";
     });
 
-    socket.on("perguntaEnviada", function (dados) {
-      campoPergunta.value = "";
-      mostrarMensagem(dados.mensagem, "sucesso");
+    socket.on("aguardeEnvio", (dados) => {
+      const mensagem = document.getElementById("mensagem");
+      mensagem.innerText = dados.mensagem;
+      mensagem.style.color = "#b91c1c";
     });
 
-    socket.on("erroAluno", function (dados) {
-      mostrarMensagem(dados.mensagem, "erro");
+    socket.on("erroAluno", (dados) => {
+      const mensagem = document.getElementById("mensagem");
+      mensagem.innerText = dados.mensagem;
+      mensagem.style.color = "#b91c1c";
     });
 
-    socket.on("aguardeEnvio", function (dados) {
-      mostrarMensagem(dados.mensagem, "erro");
-    });
-
-    socket.on("aulaEncerrada", function (dados) {
-      mostrarMensagem(dados.mensagem, "erro");
+    socket.on("aulaEncerrada", (dados) => {
+      const mensagem = document.getElementById("mensagem");
+      mensagem.innerText = dados.mensagem;
+      mensagem.style.color = "#b91c1c";
     });
 
     if ("serviceWorker" in navigator) {
