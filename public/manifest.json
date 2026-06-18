@@ -2,7 +2,8 @@
   "name": "Dúvidas CESURG",
   "short_name": "Dúvidas",
   "description": "Sistema digital para envio de dúvidas em sala de aula.",
-  "start_url": "/",
+  "id": "/?app=duvidas-cesurg-v2",
+  "start_url": "/?app=duvidas-cesurg-v2",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -15,19 +16,19 @@
   ],
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/app-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/app-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-maskable-512.png",
+      "src": "/app-icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -41,7 +42,7 @@
       "url": "/professor.html",
       "icons": [
         {
-          "src": "/icon-192.png",
+          "src": "/app-icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -54,7 +55,7 @@
       "url": "/aluno.html",
       "icons": [
         {
-          "src": "/icon-192.png",
+          "src": "/app-icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
