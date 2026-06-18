@@ -8,9 +8,11 @@
   "background_color": "#ffffff",
   "theme_color": "#0b6b3a",
   "orientation": "portrait-primary",
-  "launch_handler": {
-    "client_mode": ["navigate-existing", "auto"]
-  },
+  "lang": "pt-BR",
+  "categories": [
+    "education",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -30,5 +32,39 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Sou professor",
+      "short_name": "Professor",
+      "description": "Abrir o painel do professor",
+      "url": "/professor.html",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Sou aluno",
+      "short_name": "Aluno",
+      "description": "Abrir a tela do aluno",
+      "url": "/aluno.html",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "launch_handler": {
+    "client_mode": [
+      "navigate-existing",
+      "auto"
+    ]
+  }
 }
