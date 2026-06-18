@@ -1,4 +1,4 @@
-const CACHE_NAME = "duvidas-cesurg-v3";
+const CACHE_NAME = "duvidas-cesurg-v6";
 
 const ARQUIVOS_CACHE = [
   "/",
@@ -8,10 +8,10 @@ const ARQUIVOS_CACHE = [
   "/style.css",
   "/manifest.json",
   "/logo-cesurg.png",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/icon-maskable-512.png",
-  "/apple-touch-icon.png"
+  "/app-icon-192.png",
+  "/app-icon-512.png",
+  "/app-icon-maskable-512.png",
+  "/apple-touch-icon-v2.png"
 ];
 
 self.addEventListener("install", function (event) {
