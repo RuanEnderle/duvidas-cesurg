@@ -3,16 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>CESURG - Painel do Professor</title>
+
   <link rel="stylesheet" href="style.css">
 
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0b6b3a">
+
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Dúvidas CESURG">
-  <link rel="apple-touch-icon" href="/logo-cesurg.png">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v2.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/app-icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/app-icon-512.png">
 </head>
+
 <body class="pagina-professor">
 
   <div class="fundo-decorativo">
@@ -26,7 +33,10 @@
       <div class="logo-box">
         <img src="logo-cesurg.png" alt="Logo CESURG" class="logo-cesurg-img">
       </div>
-      <div class="subtitulo-topo">Painel do Professor</div>
+
+      <div class="subtitulo-topo">
+        Painel do Professor
+      </div>
     </div>
 
     <div class="icone-topo">👨‍🏫</div>
@@ -39,30 +49,64 @@
       </p>
 
       <label for="professor">Nome do professor:</label>
-      <input type="text" id="professor" placeholder="Digite o nome do professor">
+      <input
+        type="text"
+        id="professor"
+        placeholder="Digite o nome do professor"
+        autocomplete="off"
+      >
 
       <label for="materia">Nome da matéria ou aula:</label>
-      <input type="text" id="materia" placeholder="Digite o nome da matéria ou aula">
+      <input
+        type="text"
+        id="materia"
+        placeholder="Digite o nome da matéria ou aula"
+        autocomplete="off"
+      >
 
       <label for="turma">Turma ou curso:</label>
-      <input type="text" id="turma" placeholder="Digite a turma ou curso">
+      <input
+        type="text"
+        id="turma"
+        placeholder="Digite a turma ou curso"
+        autocomplete="off"
+      >
 
       <label for="senhaCriar">Senha do professor:</label>
-      <input type="password" id="senhaCriar" placeholder="Crie uma senha para acessar o painel">
+      <input
+        type="password"
+        id="senhaCriar"
+        placeholder="Crie uma senha para acessar o painel"
+        autocomplete="off"
+      >
 
-      <button onclick="criarAula()">Gerar código da aula</button>
+      <button onclick="criarAula()">
+        Gerar código da aula
+      </button>
 
       <p class="descricao bloco-divisao">
         Ou entre em uma aula já criada:
       </p>
 
       <label for="codigoExistente">Código da aula:</label>
-      <input type="text" id="codigoExistente" placeholder="Digite o código da aula">
+      <input
+        type="text"
+        id="codigoExistente"
+        placeholder="Digite o código da aula"
+        autocomplete="off"
+      >
 
       <label for="senhaEntrar">Senha do professor:</label>
-      <input type="password" id="senhaEntrar" placeholder="Digite a senha do painel">
+      <input
+        type="password"
+        id="senhaEntrar"
+        placeholder="Digite a senha do painel"
+        autocomplete="off"
+      >
 
-      <button onclick="entrarPainel()">Entrar no painel</button>
+      <button onclick="entrarPainel()">
+        Entrar no painel
+      </button>
 
       <p id="mensagemProfessor" class="mensagem"></p>
     </div>
@@ -81,9 +125,13 @@
       <label>Link dos alunos:</label>
       <input type="text" id="linkAluno" readonly>
 
-      <button onclick="copiarCodigo()">Copiar código</button>
+      <button onclick="copiarCodigo()">
+        Copiar código
+      </button>
 
-      <button onclick="copiarLinkAluno()">Copiar link dos alunos</button>
+      <button onclick="copiarLinkAluno()">
+        Copiar link dos alunos
+      </button>
 
       <div class="area-qrcode">
         <p class="descricao">QR Code para os alunos:</p>
@@ -125,6 +173,7 @@
     let codigoAtual = "";
     let audioContext;
     let somAtivado = false;
+    let encerrandoPeloProfessor = false;
 
     function criarAula() {
       const professor = document.getElementById("professor").value.trim();
@@ -202,8 +251,8 @@
       `;
 
       const linkGerado = window.location.origin + "/aluno.html?codigo=" + encodeURIComponent(codigoAtual);
-      linkAluno.value = linkGerado;
 
+      linkAluno.value = linkGerado;
       qrCodeAluno.src = "/qrcode?texto=" + encodeURIComponent(linkGerado);
 
       areaInicio.style.display = "none";
@@ -320,8 +369,29 @@
       tocarNotificacao();
     });
 
+    function voltarParaInicio() {
+      codigoAtual = "";
+
+      areaPainel.style.display = "none";
+      areaInicio.style.display = "block";
+
+      codigoAula.innerText = "";
+      infoAula.innerHTML = "";
+      linkAluno.value = "";
+      qrCodeAluno.src = "";
+
+      lista.innerHTML = "";
+      contador.innerText = "Nenhuma dúvida pendente.";
+
+      document.getElementById("codigoExistente").value = "";
+      document.getElementById("senhaEntrar").value = "";
+
+      mensagemProfessor.innerText = "";
+    }
+
     function encerrarAula() {
       if (codigoAtual === "") {
+        alert("Nenhuma aula está aberta no momento.");
         return;
       }
 
@@ -333,14 +403,25 @@
         return;
       }
 
+      encerrandoPeloProfessor = true;
+
       socket.emit("encerrarAula", {
         codigo: codigoAtual
       });
+
+      alert("A aula foi encerrada.");
+
+      voltarParaInicio();
     }
 
     socket.on("aulaEncerrada", (dados) => {
+      if (encerrandoPeloProfessor) {
+        encerrandoPeloProfessor = false;
+        return;
+      }
+
       alert(dados.mensagem);
-      location.reload();
+      voltarParaInicio();
     });
 
     function marcarRespondida(id) {
