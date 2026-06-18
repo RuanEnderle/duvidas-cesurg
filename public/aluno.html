@@ -14,7 +14,46 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Dúvidas CESURG">
-  <link rel="apple-touch-icon" href="/logo-cesurg.png">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v2.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/app-icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/app-icon-512.png">
+
+  <style>
+    .botao-qr {
+      margin-top: 10px;
+      background: linear-gradient(90deg, #1d4ed8, #2563eb);
+    }
+
+    .area-leitor-qr {
+      display: none;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid #dbeafe;
+      text-align: center;
+    }
+
+    #leitorQr {
+      width: 100%;
+      max-width: 330px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+
+    .texto-ajuda-qr {
+      font-size: 14px;
+      color: #4b5563;
+      margin: 8px 0 12px;
+    }
+
+    .botao-parar-qr {
+      margin-top: 12px;
+      background: linear-gradient(90deg, #b91c1c, #ef4444);
+    }
+  </style>
 </head>
 
 <body class="pagina-aluno">
@@ -41,7 +80,7 @@
     <h1>Enviar dúvida</h1>
 
     <p class="descricao">
-      Digite o código informado pelo professor e envie sua dúvida de forma privada.
+      Digite o código informado pelo professor ou leia o QR Code da aula.
     </p>
 
     <label for="codigo">Código da aula:</label>
@@ -51,6 +90,22 @@
       placeholder="Digite o código informado pelo professor"
       autocomplete="off"
     >
+
+    <button onclick="iniciarLeitorQr()" id="botaoLerQr" class="botao-qr">
+      📷 Ler QR Code da aula
+    </button>
+
+    <div id="areaLeitorQr" class="area-leitor-qr">
+      <p class="texto-ajuda-qr">
+        Aponte a câmera para o QR Code mostrado pelo professor.
+      </p>
+
+      <div id="leitorQr"></div>
+
+      <button onclick="pararLeitorQr()" class="botao-parar-qr">
+        Parar leitura
+      </button>
+    </div>
 
     <label for="nome">
       Seu nome <span class="texto-opcional">(opcional)</span>:
@@ -83,8 +138,17 @@
 
   <script src="/socket.io/socket.io.js"></script>
 
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
   <script>
     const socket = io();
+
+    const campoCodigo = document.getElementById("codigo");
+    const mensagem = document.getElementById("mensagem");
+    const areaLeitorQr = document.getElementById("areaLeitorQr");
+
+    let leitorQr = null;
+    let qrAtivo = false;
 
     let alunoId = localStorage.getItem("alunoIdDuvidasCesurg");
 
@@ -97,24 +161,137 @@
     const codigoDoLink = parametros.get("codigo");
 
     if (codigoDoLink) {
-      document.getElementById("codigo").value = codigoDoLink.toUpperCase();
+      campoCodigo.value = codigoDoLink.toUpperCase();
+    }
+
+    function mostrarMensagem(texto, cor) {
+      mensagem.innerText = texto;
+      mensagem.style.color = cor;
+    }
+
+    function iniciarLeitorQr() {
+      if (qrAtivo) {
+        return;
+      }
+
+      if (typeof Html5Qrcode === "undefined") {
+        mostrarMensagem("Não foi possível carregar o leitor de QR Code. Verifique a internet e tente novamente.", "#b91c1c");
+        return;
+      }
+
+      areaLeitorQr.style.display = "block";
+      mostrarMensagem("Abrindo câmera para leitura do QR Code...", "#1d4ed8");
+
+      leitorQr = new Html5Qrcode("leitorQr");
+      qrAtivo = true;
+
+      Html5Qrcode.getCameras()
+        .then(function (cameras) {
+          if (!cameras || cameras.length === 0) {
+            mostrarMensagem("Nenhuma câmera foi encontrada no dispositivo.", "#b91c1c");
+            qrAtivo = false;
+            return;
+          }
+
+          let cameraEscolhida = cameras[0].id;
+
+          cameras.forEach(function (camera) {
+            const nome = camera.label.toLowerCase();
+
+            if (
+              nome.includes("back") ||
+              nome.includes("rear") ||
+              nome.includes("traseira") ||
+              nome.includes("environment")
+            ) {
+              cameraEscolhida = camera.id;
+            }
+          });
+
+          leitorQr.start(
+            cameraEscolhida,
+            {
+              fps: 10,
+              qrbox: {
+                width: 250,
+                height: 250
+              }
+            },
+            function (textoQr) {
+              tratarQrCodeLido(textoQr);
+            },
+            function () {
+              // Não precisa mostrar erro a cada tentativa de leitura.
+            }
+          );
+        })
+        .catch(function () {
+          mostrarMensagem("Permita o acesso à câmera para ler o QR Code.", "#b91c1c");
+          qrAtivo = false;
+        });
+    }
+
+    function pararLeitorQr() {
+      if (!leitorQr || !qrAtivo) {
+        areaLeitorQr.style.display = "none";
+        return;
+      }
+
+      leitorQr.stop()
+        .then(function () {
+          leitorQr.clear();
+          leitorQr = null;
+          qrAtivo = false;
+          areaLeitorQr.style.display = "none";
+        })
+        .catch(function () {
+          leitorQr = null;
+          qrAtivo = false;
+          areaLeitorQr.style.display = "none";
+        });
+    }
+
+    function tratarQrCodeLido(textoQr) {
+      let codigoEncontrado = textoQr.trim();
+
+      try {
+        const url = new URL(codigoEncontrado);
+        const codigoUrl = url.searchParams.get("codigo");
+
+        if (codigoUrl) {
+          codigoEncontrado = codigoUrl;
+        }
+      } catch (erro) {
+        // Se não for link, continua usando o texto lido.
+      }
+
+      codigoEncontrado = codigoEncontrado.trim().toUpperCase();
+
+      const padraoCodigo = codigoEncontrado.match(/[A-Z]{3}-[0-9]{3}/);
+
+      if (padraoCodigo) {
+        codigoEncontrado = padraoCodigo[0];
+      }
+
+      campoCodigo.value = codigoEncontrado;
+
+      mostrarMensagem("QR Code lido com sucesso! Código da aula preenchido.", "#15803d");
+
+      pararLeitorQr();
     }
 
     function enviarPergunta() {
-      const codigo = document.getElementById("codigo").value.trim().toUpperCase();
+      const codigo = campoCodigo.value.trim().toUpperCase();
       const nome = document.getElementById("nome").value.trim();
       const pergunta = document.getElementById("pergunta").value.trim();
-      const mensagem = document.getElementById("mensagem");
 
       if (codigo === "") {
-        mensagem.innerText = "Digite o código da aula antes de enviar.";
-        mensagem.style.color = "#b91c1c";
+        mostrarMensagem("Digite o código da aula antes de enviar.", "#b91c1c");
         return;
       }
 
       if (pergunta === "") {
-        mensagem.innerText = "Digite uma dúvida antes de enviar.";
-        mensagem.style.color = "#b91c1c";
+        mostrarMensagem("Digite uma dúvida antes de enviar.", "#b91c1c");
         return;
       }
 
@@ -134,29 +311,21 @@
 
     socket.on("perguntaEnviada", (dados) => {
       const pergunta = document.getElementById("pergunta");
-      const mensagem = document.getElementById("mensagem");
 
       pergunta.value = "";
-      mensagem.innerText = dados.mensagem;
-      mensagem.style.color = "#15803d";
+      mostrarMensagem(dados.mensagem, "#15803d");
     });
 
     socket.on("aguardeEnvio", (dados) => {
-      const mensagem = document.getElementById("mensagem");
-      mensagem.innerText = dados.mensagem;
-      mensagem.style.color = "#b91c1c";
+      mostrarMensagem(dados.mensagem, "#b91c1c");
     });
 
     socket.on("erroAluno", (dados) => {
-      const mensagem = document.getElementById("mensagem");
-      mensagem.innerText = dados.mensagem;
-      mensagem.style.color = "#b91c1c";
+      mostrarMensagem(dados.mensagem, "#b91c1c");
     });
 
     socket.on("aulaEncerrada", (dados) => {
-      const mensagem = document.getElementById("mensagem");
-      mensagem.innerText = dados.mensagem;
-      mensagem.style.color = "#b91c1c";
+      mostrarMensagem(dados.mensagem, "#b91c1c");
     });
 
     if ("serviceWorker" in navigator) {
